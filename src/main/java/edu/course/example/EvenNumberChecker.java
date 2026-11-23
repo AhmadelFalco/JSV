@@ -5,6 +5,6 @@ package edu.course.example;
  */
 public class EvenNumberChecker {
     public boolean isEven(int value) {
-        return value % 2 == 0;
+        return value % 3 == 0;
     }
 }
