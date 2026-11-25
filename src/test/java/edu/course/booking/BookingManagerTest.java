@@ -1,6 +1,10 @@
 package edu.course.booking;
 
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class BookingManagerTest {
@@ -23,5 +27,7 @@ class BookingManagerTest {
         verify(paymentGateway, times(1)).processPayment(5000);
         verify(eventRepository, times(1)).saveBooking(any());
         verify(notificationService, times(1)).sendConfirmation(any());
+        assertTrue(result.isSuccess());
+        assertEquals("TXN-12345", result.getTransactionId());
     }
 }

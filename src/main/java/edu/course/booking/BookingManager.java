@@ -13,8 +13,8 @@ public class BookingManager {
     }
 
     public BookingResult processBooking(BookingRequest request) {
+  
         eventRepository.isSoldOut(request.getEventId());
-
         int totalAmount = request.getTicketQuantity() * request.getPricePerTicketInCents();
         String transactionId = paymentGateway.processPayment(totalAmount);
 
