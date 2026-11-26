@@ -13,13 +13,8 @@ public class BookingManager {
     }
 
     public BookingResult processBooking(BookingRequest request) {
-       // (M1-US2) Ahmad Emads if statement
-        if (request.getCustomerId() == null || request.getCustomerId().isBlank() ||
-            request.getEventId() == null || request.getEventId().isBlank() ||
-            request.getTicketQuantity() < 1 || request.getTicketQuantity() > 5 ||
-            request.getPricePerTicketInCents() <= 0) {
-            throw new IllegalArgumentException("Invalid booking request");
-        }
+       // (M1-US2) Ahmad Emads validation
+        validateRequest(request);
 
 
 
@@ -33,4 +28,14 @@ public class BookingManager {
 
         return new BookingResult(true, transactionId);
     }
+
+    private void validateRequest(BookingRequest request) {
+    if (request.getCustomerId() == null || request.getCustomerId().isBlank() ||
+        request.getEventId() == null || request.getEventId().isBlank() ||
+        request.getTicketQuantity() < 1 || request.getTicketQuantity() > 5 ||
+        request.getPricePerTicketInCents() <= 0) {
+        throw new IllegalArgumentException("Invalid booking request");
+    }
+    }
+
 }
