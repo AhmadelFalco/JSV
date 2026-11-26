@@ -78,7 +78,29 @@ void shouldRejectWhenCustomerIdOrEventIdIsNull() {
 
 
 
+@Test
+void shouldRejectBookingWhenEventIsSoldOut() {
 
+    IPaymentGateway paymentGateway = mock(IPaymentGateway.class);
+    INotificationService notificationService = mock(INotificationService.class);
+    IEventRepository eventRepository = mock(IEventRepository.class);
+
+    BookingRequest request = new BookingRequest("C1", "E1", 2, 2500);
+
+    when(eventRepository.isSoldOut("E1")).thenReturn(true);
+
+    BookingManager manager = new BookingManager(
+            paymentGateway, notificationService, eventRepository);
+
+    assertThrows(IllegalStateException.class,
+            () -> manager.processBooking(request));
+
+    verify(eventRepository, times(1)).isSoldOut("E1");
+
+    verify(paymentGateway, never()).processPayment(anyInt());
+    verify(eventRepository, never()).saveBooking(any());
+    verify(notificationService, never()).sendConfirmation(any());
+}
 
 
 }
