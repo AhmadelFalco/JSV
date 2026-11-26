@@ -18,7 +18,9 @@ public class BookingManager {
 
 
 
-        eventRepository.isSoldOut(request.getEventId());
+        if (eventRepository.isSoldOut(request.getEventId())) {
+    throw new IllegalStateException("Event is sold out");
+}
 
         int totalAmount = request.getTicketQuantity() * request.getPricePerTicketInCents();
         String transactionId = paymentGateway.processPayment(totalAmount);
