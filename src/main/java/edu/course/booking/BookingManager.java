@@ -24,11 +24,13 @@ public class BookingManager {
 
         int totalAmount = request.getTicketQuantity() * request.getPricePerTicketInCents();
         String transactionId;
+        // maq (M1-US4) start
         try {
             transactionId = paymentGateway.processPayment(totalAmount);
         } catch (RuntimeException e) {
             throw new PaymentFailedException("Payment processing failed: " + e.getMessage());
         }
+        // maq (M1-US4) end
 
         eventRepository.saveBooking(request);
         notificationService.sendConfirmation(request);

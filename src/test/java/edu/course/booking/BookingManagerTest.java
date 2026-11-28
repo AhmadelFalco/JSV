@@ -100,6 +100,7 @@ void shouldRejectBookingWhenEventIsSoldOut() {
     verify(eventRepository, never()).saveBooking(any());
     verify(notificationService, never()).sendConfirmation(any());
 }
+// maq (M1-US4)
     @Test
     void shouldRejectWhenPaymentFails() {
         IPaymentGateway paymentGateway = mock(IPaymentGateway.class);
