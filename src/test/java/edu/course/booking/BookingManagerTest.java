@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
 class BookingManagerTest {
 //maq M1-US1 test (MajdAldeen)
     @Test
@@ -101,6 +100,26 @@ void shouldRejectBookingWhenEventIsSoldOut() {
     verify(eventRepository, never()).saveBooking(any());
     verify(notificationService, never()).sendConfirmation(any());
 }
+    @Test
+    void shouldRejectWhenPaymentFails() {
+        IPaymentGateway paymentGateway = mock(IPaymentGateway.class);
+        INotificationService notificationService = mock(INotificationService.class);
+        IEventRepository eventRepository = mock(IEventRepository.class);
 
+        BookingRequest request = new BookingRequest("C1", "E1", 2, 2500);
+
+        when(eventRepository.isSoldOut("E1")).thenReturn(false);
+        when(paymentGateway.processPayment(5000)).thenThrow(new RuntimeException("Payment Failed"));
+
+
+        BookingManager manager = new BookingManager(paymentGateway, notificationService, eventRepository);
+
+        assertThrows(RuntimeException.class, () -> manager.processBooking(request));
+
+        verify(eventRepository, times(1)).isSoldOut("E1");
+        verify(paymentGateway, times(1)).processPayment(5000);
+        verify(eventRepository, never()).saveBooking(any());
+        verify(notificationService, never()).sendConfirmation(any());
+    }
 
 }
